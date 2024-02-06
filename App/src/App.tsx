@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import logo from "./assets/Logo.svg";
+import { Card } from "./components/card";
+import { NewCard } from "./components/NewCard";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+export function App() {
+    return (
+        <div className="max-w-6xl mx-auto my-12 space-y-6">
+            <img src={logo} alt="NLW Expert" />
+            <form className="w-full">
+                <input
+                    className="w-full bg-transparent text-3xl font-semibold tracking-tight placeholder:text-slate-500 outline-none"
+                    type="text"
+                    placeholder="Search in your Notes..."
+                />
+            </form>
+            <hr className="h-0.5 bg-slate-700" />
+            <div className="grid grid-cols-3 auto-rows-[250px] gap-6">
+                <NewCard />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+            </div>
+        </div>
+    );
 }
-
-export default App

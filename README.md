@@ -6,4 +6,4 @@ Aplicativo de criação de notas utilizando gravações ou capturas de áudio
 - Vite
 - React
 - TypeScript
-- 
+- Tailwindcss
