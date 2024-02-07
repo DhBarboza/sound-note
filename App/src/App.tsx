@@ -1,6 +1,11 @@
 import logo from "./assets/Logo.svg";
-import { Card } from "./components/card";
+import { Card } from "./components/Card";
 import { NewCard } from "./components/NewCard";
+
+const notes = {
+    date: new Date(),
+    description: "Notes",
+};
 
 export function App() {
     return (
@@ -16,15 +21,7 @@ export function App() {
             <hr className="h-0.5 bg-slate-700" />
             <div className="grid grid-cols-3 auto-rows-[250px] gap-6">
                 <NewCard />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
+                <Card note={notes} />
             </div>
         </div>
     );

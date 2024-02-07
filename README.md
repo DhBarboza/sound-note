@@ -1,4 +1,5 @@
-# sound-note
+# Sound note
+
 Aplicativo de criação de notas utilizando gravações ou capturas de áudio
 
 ## Tools
@@ -7,3 +8,6 @@ Aplicativo de criação de notas utilizando gravações ou capturas de áudio
 - React
 - TypeScript
 - Tailwindcss
+- Radix UI
+- Date FNS
+- Pacote de ìcones: Lucide React
