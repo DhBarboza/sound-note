@@ -3,24 +3,31 @@ import { X } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "sonner";
 
-export function NewCard() {
+interface INewCard {
+    onNoteCreated: (description: string) => void;
+}
+
+export function NewCard({ onNoteCreated }: INewCard) {
     const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true);
-    const [inputContent, SetInputContent] = useState("");
+    const [inputContent, setInputContent] = useState("");
 
     function handleStartEditor() {
         setShouldShowOnboarding(false);
     }
 
     function handleContentChange(event: ChangeEvent<HTMLTextAreaElement>) {
-        SetInputContent(event.target.value);
+        setInputContent(event.target.value);
         if (event.target.value === "") {
             setShouldShowOnboarding(true);
         }
     }
 
     function hundleSaveNote(event: FormEvent) {
-        event.preventDefault()
-        toast.success("Note saved")
+        event.preventDefault();
+        onNoteCreated(inputContent);
+        setInputContent("");
+        setShouldShowOnboarding(true);
+        toast.success("Note saved");
     }
 
     return (
@@ -70,6 +77,7 @@ export function NewCard() {
                                     autoFocus
                                     className="text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none"
                                     onChange={handleContentChange}
+                                    value={inputContent}
                                 />
                             )}
                         </div>

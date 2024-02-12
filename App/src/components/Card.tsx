@@ -15,7 +15,10 @@ export function Card({ note }: ICard) {
         <Dialog.Root>
             <Dialog.Trigger className="p-5 outline-none text-left flex flex-col rounded-md bg-slate-50 shadow-md gap-3 overflow-hidden relative hover:ring-2 hover:ring-offset-blue-600 focus-visible:ring-2 focus-visible:ring-orange-600">
                 <span className="text-sm font-medium text-orange-600">
-                    {note.date.toISOString()}
+                    {formatDistanceToNow(note.date, {
+                        locale: ptBR,
+                        addSuffix: true,
+                    })}
                 </span>
                 <p className="text-sm leading-6 text-slate-400">
                     {note.description}
