@@ -7,8 +7,13 @@ interface INewCard {
     onNoteCreated: (description: string) => void;
 }
 
+let speechRecognition: SpeechRecognition | null = null;
+
 export function NewCard({ onNoteCreated }: INewCard) {
+    const [isRecording, setIsRecordig] = useState(false);
+
     const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true);
+
     const [inputContent, setInputContent] = useState("");
 
     function handleStartEditor() {
@@ -24,10 +29,62 @@ export function NewCard({ onNoteCreated }: INewCard) {
 
     function hundleSaveNote(event: FormEvent) {
         event.preventDefault();
+
+        if (inputContent === "") {
+            return;
+        }
+
         onNoteCreated(inputContent);
         setInputContent("");
         setShouldShowOnboarding(true);
         toast.success("Note saved");
+    }
+
+    function handleStartRecord() {
+        const isSpeechRecognitionAPIAvaible =
+            "SpeechRecognition" in window ||
+            "webkitSpeechRecognition" in window;
+
+        if (!isSpeechRecognitionAPIAvaible) {
+            return alert("Your browser does not support recording");
+        }
+
+        setIsRecordig(true);
+        setShouldShowOnboarding(false);
+
+        const SpeechRecognition =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        speechRecognition = new SpeechRecognition();
+
+        speechRecognition.lang = "pt-BR";
+        speechRecognition.continuous = true;
+        speechRecognition.maxAlternatives = 1;
+        speechRecognition.interimResults = true;
+
+        speechRecognition.onresult = (event) => {
+            const transcription = Array.from(event.results).reduce(
+                (text, result) => {
+                    return text.concat(result[0].transcript);
+                },
+                ""
+            );
+            setInputContent(transcription);
+        };
+
+        speechRecognition.onerror = (event) => {
+            console.error(event);
+        };
+
+        speechRecognition.start();
+    }
+
+    function handleStopRecord() {
+        setIsRecordig(false);
+
+        if (speechRecognition !== null) {
+            speechRecognition.stop();
+        }
     }
 
     return (
@@ -43,15 +100,12 @@ export function NewCard({ onNoteCreated }: INewCard) {
 
             <Dialog.Portal>
                 <Dialog.Overlay className="inset-0 fixed bg-black/60" />
-                <Dialog.Content className="fixed overflow-hidden left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[640px] w-full h-[60vh] bg-white rounded-md flex flex-col outline-none shadow-lg">
+                <Dialog.Content className="fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] w-full md:h-[60vh] bg-white rounded-md flex flex-col outline-none shadow-lg">
                     <Dialog.Close className="absolute right-0 top-0 p-1.5 text-red-600">
                         <X />
                     </Dialog.Close>
 
-                    <form
-                        onSubmit={hundleSaveNote}
-                        className="flex flex-1 flex-col"
-                    >
+                    <form className="flex flex-1 flex-col">
                         <div className="flex flex-1 flex-col gap-3 p-5">
                             <span className="text-sm font-semibold text-orange-600">
                                 Add note
@@ -60,11 +114,16 @@ export function NewCard({ onNoteCreated }: INewCard) {
                             {shouldShowOnboarding == true ? (
                                 <p className="text-sm leading-6 text-slate-400">
                                     Start by{" "}
-                                    <button className="text-blue-600 hover:underline font-medium">
+                                    <button
+                                        type="button"
+                                        onClick={handleStartRecord}
+                                        className="text-blue-600 hover:underline font-medium"
+                                    >
                                         recording an audio
                                     </button>{" "}
                                     note or if you prefer, just{" "}
                                     <button
+                                        type="button"
                                         className="text-blue-600 hover:underline font-medium"
                                         onClick={handleStartEditor}
                                     >
@@ -81,12 +140,25 @@ export function NewCard({ onNoteCreated }: INewCard) {
                                 />
                             )}
                         </div>
-                        <button
-                            type="submit"
-                            className="w-full bg-green-600 py-4 text-center text-sm text-white outline-none font-medium hover:bg-green-700"
-                        >
-                            Save
-                        </button>
+
+                        {isRecording ? (
+                            <button
+                                type="button"
+                                onClick={handleStopRecord}
+                                className="w-full flex items-center justify-center gap-2  bg-blue-600 py-4 text-center text-sm text-white outline-none font-medium hover:bg-green-700"
+                            >
+                                <div className="size-3 rounded-full bg-red-500 animate-pulse" />
+                                Recording! (click to stop)
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={hundleSaveNote}
+                                className="w-full bg-green-600 py-4 text-center text-sm text-white outline-none font-medium hover:bg-green-700"
+                            >
+                                Save
+                            </button>
+                        )}
                     </form>
                 </Dialog.Content>
             </Dialog.Portal>
